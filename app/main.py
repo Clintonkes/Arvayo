@@ -8,13 +8,14 @@ from app.database import engine
 from app.models.models import Base
 from app.routers import services, orders, admin
 from app.config import settings
+from app.utils.seed import auto_seed
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables on startup (for development; use alembic for production)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    await auto_seed()   # no-op after first run; idempotent
     yield
     await engine.dispose()
 

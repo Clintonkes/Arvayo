@@ -88,8 +88,9 @@ export default function DateTimeStep({ data, onUpdate, onNext, onBack }: Props) 
               {availability?.available_slots?.map((slot: string) => (
                 <button
                   key={slot}
+                  type="button"
                   onClick={() => handleTimeSelect(slot)}
-                  className={`py-3 px-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                  className={`cursor-pointer py-3 px-3 rounded-xl border-2 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${
                     data.scheduledTime === slot
                       ? 'border-primary bg-primary text-white shadow-md'
                       : 'border-slate-200 hover:border-primary hover:bg-primary/5 text-slate-700'

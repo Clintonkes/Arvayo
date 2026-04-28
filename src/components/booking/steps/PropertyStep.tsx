@@ -49,7 +49,7 @@ export default function PropertyStep({ data, onUpdate, onNext, onBack }: Props) 
         <button
           type="button"
           onClick={() => onUpdate({ [field]: Math.max(1, value - 1) })}
-          className="w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+          className="cursor-pointer w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
         >
           <Minus className="w-3 h-3" />
         </button>
@@ -57,7 +57,7 @@ export default function PropertyStep({ data, onUpdate, onNext, onBack }: Props) 
         <button
           type="button"
           onClick={() => onUpdate({ [field]: Math.min(10, value + 1) })}
-          className="w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+          className="cursor-pointer w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
         >
           <Plus className="w-3 h-3" />
         </button>
