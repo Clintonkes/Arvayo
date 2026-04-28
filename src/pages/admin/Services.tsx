@@ -35,12 +35,32 @@ export default function AdminServices() {
 
   const { data: services, isLoading } = useQuery({ queryKey: ['admin-services'], queryFn: fetchAdminServices })
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
+  type ServiceFormValues = {
+    name: string
+    description: string
+    short_description: string
+    price: string
+    duration_minutes: string
+    icon: string
+    features: string
+  }
+
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ServiceFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { icon: 'sparkles', duration_minutes: '120' },
+    defaultValues: {
+      name: '',
+      description: '',
+      short_description: '',
+      price: '',
+      duration_minutes: '120',
+      icon: 'sparkles',
+      features: '',
+    },
   })
 
-  const openCreate = () => { setEditing(null); reset({ icon: 'sparkles', duration_minutes: '120' }); setModalOpen(true) }
+  const BLANK_FORM: ServiceFormValues = { name: '', description: '', short_description: '', price: '', duration_minutes: '120', icon: 'sparkles', features: '' }
+
+  const openCreate = () => { setEditing(null); reset(BLANK_FORM); setModalOpen(true) }
   const openEdit = (svc: any) => {
     setEditing(svc)
     reset({
@@ -166,7 +186,7 @@ export default function AdminServices() {
                 <div className="flex gap-2 flex-wrap">
                   {ICON_OPTIONS.map(ic => (
                     <button key={ic} type="button" onClick={() => setValue('icon', ic)}
-                      className={`px-3 py-2 rounded-lg border-2 text-lg transition-all ${ic === (editing?.icon || 'sparkles') ? 'border-primary bg-primary/5' : 'border-slate-200'}`}>
+                      className={`px-3 py-2 rounded-lg border-2 text-lg transition-all ${ic === watch('icon') ? 'border-primary bg-primary/5' : 'border-slate-200'}`}>
                       {ICON_EMOJI[ic]}
                     </button>
                   ))}

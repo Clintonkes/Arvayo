@@ -66,8 +66,8 @@ export default function BookingWizard() {
   const [step, setStep] = useState(0)
   const [data, setData] = useState<BookingData>(INITIAL_DATA)
 
-  const mutation = useMutation({
-    mutationFn: createBooking,
+  const mutation = useMutation<{ order_number: string }, Error, Record<string, unknown>>({
+    mutationFn: (payload) => createBooking(payload),
     onSuccess: (order) => {
       navigate(`/booking-success/${order.order_number}`)
     },
@@ -83,7 +83,7 @@ export default function BookingWizard() {
   const back = () => setStep((s) => Math.max(s - 1, 0))
 
   const handleSubmit = () => {
-    mutation.mutate({
+    const payload: Record<string, unknown> = {
       service_id: data.serviceId,
       customer_name: data.customerName,
       customer_email: data.customerEmail,
@@ -99,7 +99,8 @@ export default function BookingWizard() {
       scheduled_date: data.scheduledDate,
       scheduled_time: data.scheduledTime,
       special_instructions: data.specialInstructions || null,
-    })
+    }
+    mutation.mutate(payload)
   }
 
   const progress = ((step + 1) / STEPS.length) * 100
