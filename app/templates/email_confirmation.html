@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booking Confirmation – {{ order.order_number }}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; color: #1e293b; }
+    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: linear-gradient(135deg, #00C4B4 0%, #009B8F 100%); padding: 40px 32px; text-align: center; }
+    .logo-text { font-size: 28px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+    .logo-sub { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+    .check-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 20px auto 16px; }
+    .check-icon svg { width: 32px; height: 32px; }
+    .header h1 { font-size: 22px; font-weight: 700; color: #ffffff; margin-top: 8px; }
+    .header p { font-size: 14px; color: rgba(255,255,255,0.9); margin-top: 6px; }
+    .order-number-badge { display: inline-block; background: rgba(255,255,255,0.25); color: #ffffff; font-size: 16px; font-weight: 700; padding: 8px 20px; border-radius: 100px; margin-top: 16px; letter-spacing: 1px; }
+    .body { padding: 36px 32px; }
+    .greeting { font-size: 18px; font-weight: 600; color: #0A2540; margin-bottom: 8px; }
+    .intro { font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 28px; }
+    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 12px; }
+    .detail-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .detail-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #e9eef3; }
+    .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .detail-label { font-size: 13px; color: #64748b; font-weight: 500; }
+    .detail-value { font-size: 13px; color: #1e293b; font-weight: 600; text-align: right; max-width: 60%; }
+    .price-row { background: linear-gradient(135deg, #f0fdf9, #ecfdf5); border: 1px solid #10B981; border-radius: 10px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .price-label { font-size: 14px; font-weight: 600; color: #047857; }
+    .price-value { font-size: 24px; font-weight: 800; color: #059669; }
+    .status-badge { display: inline-block; background: #fef3c7; color: #d97706; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .divider { height: 1px; background: #e2e8f0; margin: 24px 0; }
+    .next-steps { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+    .next-steps h3 { font-size: 14px; font-weight: 700; color: #0369a1; margin-bottom: 12px; }
+    .step-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .step-num { width: 22px; height: 22px; background: #00C4B4; color: white; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .step-text { font-size: 13px; color: #334155; line-height: 1.5; }
+    .contact-block { text-align: center; padding: 20px; }
+    .contact-block p { font-size: 13px; color: #64748b; margin-bottom: 4px; }
+    .contact-block a { color: #00C4B4; text-decoration: none; font-weight: 600; }
+    .footer { background: #0A2540; padding: 24px 32px; text-align: center; }
+    .footer p { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+    .footer .brand { font-size: 14px; font-weight: 700; color: #00C4B4; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-text">{{ company_name }}</div>
+      <div class="logo-sub">Professional Cleaning Services You Can Trust</div>
+      <div class="check-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1>Booking Confirmed!</h1>
+      <p>Your cleaning appointment has been successfully scheduled.</p>
+      <div class="order-number-badge">{{ order.order_number }}</div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <p class="greeting">Hello, {{ order.customer_name.split()[0] }}! 👋</p>
+      <p class="intro">
+        Thank you for choosing Arvayo LLC! We've received your booking and our team is ready to make your space spotless.
+        Here's a summary of your appointment:
+      </p>
+
+      <!-- Service & Scheduling -->
+      <div class="section-title">Appointment Details</div>
+      <div class="detail-card">
+        <div class="detail-row">
+          <span class="detail-label">Service</span>
+          <span class="detail-value">{{ service.name }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Date</span>
+          <span class="detail-value">{{ order.scheduled_date.strftime('%B %d, %Y') }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Time</span>
+          <span class="detail-value">{{ order.scheduled_time }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Duration</span>
+          <span class="detail-value">~{{ service.duration_minutes // 60 }}h {{ service.duration_minutes % 60 }}min</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status</span>
+          <span class="detail-value"><span class="status-badge">Pending Confirmation</span></span>
+        </div>
+      </div>
+
+      <!-- Property -->
+      <div class="section-title">Property Address</div>
+      <div class="detail-card">
+        <div class="detail-row">
+          <span class="detail-label">Address</span>
+          <span class="detail-value">{{ order.address }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">City / State / ZIP</span>
+          <span class="detail-value">{{ order.city }}, {{ order.state }} {{ order.zip_code }}</span>
+        </div>
+        {% if order.num_bedrooms %}
+        <div class="detail-row">
+          <span class="detail-label">Bedrooms / Bathrooms</span>
+          <span class="detail-value">{{ order.num_bedrooms }} bed / {{ order.num_bathrooms }} bath</span>
+        </div>
+        {% endif %}
+        {% if order.has_pets %}
+        <div class="detail-row">
+          <span class="detail-label">Pets</span>
+          <span class="detail-value">Yes (noted)</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Price -->
+      <div class="price-row">
+        <span class="price-label">Total Amount</span>
+        <span class="price-value">${{ "%.2f"|format(order.total_price) }}</span>
+      </div>
+
+      {% if order.special_instructions %}
+      <div class="section-title">Special Instructions</div>
+      <div class="detail-card">
+        <p style="font-size: 13px; color: #334155; line-height: 1.6;">{{ order.special_instructions }}</p>
+      </div>
+      {% endif %}
+
+      <div class="divider"></div>
+
+      <!-- Next Steps -->
+      <div class="next-steps">
+        <h3>📋 What Happens Next?</h3>
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <span class="step-text"><strong>Confirmation call</strong> — Our team will call you within 2 hours to confirm your appointment.</span>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <span class="step-text"><strong>Day before reminder</strong> — We'll send a reminder the day before your scheduled cleaning.</span>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <span class="step-text"><strong>Cleaning day</strong> — Our certified cleaners will arrive promptly at your scheduled time.</span>
+        </div>
+      </div>
+
+      <div class="contact-block">
+        <p>Questions? Contact us anytime:</p>
+        <p><a href="tel:{{ company_phone }}">{{ company_phone }}</a> &nbsp;|&nbsp; <a href="mailto:{{ company_email }}">{{ company_email }}</a></p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="brand">{{ company_name }}</div>
+      <p>Professional Cleaning Services You Can Trust<br>
+      © 2026 {{ company_name }}. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
