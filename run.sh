@@ -13,6 +13,6 @@ if [ "$SEED_DB" = "true" ]; then
   python seed.py
 fi
 
-# Start server
-echo "Starting FastAPI server..."
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+# Start server — Railway injects $PORT; fall back to 8000 for local dev
+echo "Starting FastAPI server on port ${PORT:-8000}..."
+exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}"

@@ -53,8 +53,8 @@ COPY --from=frontend-builder /app/dist ./dist
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Expose port
+# Railway injects $PORT at runtime; EXPOSE is documentation only
 EXPOSE 8000
 
-# Run the application
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use shell form so ${PORT:-8000} is expanded at runtime
+CMD bash run.sh

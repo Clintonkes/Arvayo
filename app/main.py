@@ -1,6 +1,9 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from app.database import engine
 from app.models.models import Base
 from app.routers import services, orders, admin
@@ -36,15 +39,21 @@ app.include_router(orders.router)
 app.include_router(admin.router)
 
 
-@app.get("/")
-async def root():
-    return {
-        "company": settings.company_name,
-        "status": "online",
-        "docs": "/docs",
-    }
-
-
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
+
+
+# ── Serve React SPA ──────────────────────────────────────────────────────────
+# Must come AFTER all API routers so /api/* routes are matched first.
+# StaticFiles with html=True acts as a catch-all and returns index.html
+# for any path that doesn't resolve to a real file (SPA client-side routing).
+_DIST = os.path.join(os.path.dirname(__file__), "..", "dist")
+
+if os.path.isdir(_DIST):
+    app.mount("/", StaticFiles(directory=_DIST, html=True), name="spa")
+else:
+    # No built frontend present (local API-only dev) – keep a JSON root
+    @app.get("/")
+    async def root():
+        return {"company": settings.company_name, "status": "online", "docs": "/docs"}
