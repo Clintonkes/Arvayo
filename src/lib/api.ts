@@ -83,3 +83,6 @@ export const deleteAdminService = (id: number) =>
 
 export const exportOrdersCsv = () =>
   api.get('/admin/reports/export', { responseType: 'blob' }).then((r) => r.data)
+
+export const fetchCustomers = () =>
+  api.get('/admin/customers').then((r) => r.data)

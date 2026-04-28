@@ -6,6 +6,7 @@ import { Menu, X, Sparkles, Phone } from 'lucide-react'
 const links = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export default function Navbar() {

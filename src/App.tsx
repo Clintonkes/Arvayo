@@ -12,6 +12,8 @@ import AdminOrders from '@/pages/admin/Orders'
 import AdminServices from '@/pages/admin/Services'
 import AdminReports from '@/pages/admin/Reports'
 import AdminSettings from '@/pages/admin/Settings'
+import AdminCustomers from '@/pages/admin/Customers'
+import Contact from '@/pages/Contact'
 import AdminLayout from '@/components/layout/AdminLayout'
 import { AdminGuard } from '@/components/layout/AdminGuard'
 
@@ -25,6 +27,7 @@ export default function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/book" element={<BookingPage />} />
           <Route path="/booking-success/:orderNumber" element={<BookingSuccess />} />
+          <Route path="/contact" element={<Contact />} />
 
           {/* Admin auth */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -35,6 +38,7 @@ export default function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="services" element={<AdminServices />} />
+            <Route path="customers" element={<AdminCustomers />} />
             <Route path="reports" element={<AdminReports />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>

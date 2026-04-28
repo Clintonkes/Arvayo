@@ -6,12 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.schemas.schemas import (
     Token, AdminUserOut, ServiceCreate, ServiceUpdate, ServiceOut,
-    OrderOut, OrderStatusUpdate, MetricsOut
+    OrderOut, OrderStatusUpdate, MetricsOut, OrdersPage, CustomerSummary
 )
 from app.crud.crud import (
     get_admin_user_by_email, get_orders, get_order, update_order_status,
     delete_order, get_services, get_service, create_service, update_service,
-    delete_service, get_metrics
+    delete_service, get_metrics, get_customers
 )
 from app.utils.auth import verify_password, create_access_token, get_current_admin
 from app.models.models import AdminUser, OrderStatus
@@ -41,7 +41,7 @@ async def login(
 
 @router.get("/auth/me", response_model=AdminUserOut)
 async def get_me(current_user: AdminUser = Depends(get_current_admin)):
-    return current_user
+    return AdminUserOut.model_validate(current_user)
 
 
 # ─── Metrics ─────────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ async def dashboard_metrics(
 
 # ─── Orders ───────────────────────────────────────────────────────────────────
 
-@router.get("/orders", response_model=dict)
+@router.get("/orders", response_model=OrdersPage)
 async def list_orders(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
@@ -66,7 +66,12 @@ async def list_orders(
     _: AdminUser = Depends(get_current_admin),
 ):
     orders, total = await get_orders(db, skip=skip, limit=limit, status=status, search=search)
-    return {"items": orders, "total": total, "skip": skip, "limit": limit}
+    return OrdersPage(
+        items=[OrderOut.model_validate(o) for o in orders],
+        total=total,
+        skip=skip,
+        limit=limit,
+    )
 
 
 @router.get("/orders/{order_id}", response_model=OrderOut)
@@ -78,7 +83,7 @@ async def get_order_detail(
     order = await get_order(db, order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    return OrderOut.model_validate(order)
 
 
 @router.patch("/orders/{order_id}/status", response_model=OrderOut)
@@ -91,7 +96,7 @@ async def update_status(
     order = await update_order_status(db, order_id, data.status)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    return OrderOut.model_validate(order)
 
 
 @router.delete("/orders/{order_id}", status_code=204)
@@ -100,9 +105,18 @@ async def remove_order(
     db: AsyncSession = Depends(get_db),
     _: AdminUser = Depends(get_current_admin),
 ):
-    deleted = await delete_order(db, order_id)
-    if not deleted:
+    if not await delete_order(db, order_id):
         raise HTTPException(status_code=404, detail="Order not found")
+
+
+# ─── Customers ────────────────────────────────────────────────────────────────
+
+@router.get("/customers", response_model=list[CustomerSummary])
+async def list_customers(
+    db: AsyncSession = Depends(get_db),
+    _: AdminUser = Depends(get_current_admin),
+):
+    return await get_customers(db)
 
 
 # ─── Services ─────────────────────────────────────────────────────────────────
@@ -143,8 +157,7 @@ async def admin_delete_service(
     db: AsyncSession = Depends(get_db),
     _: AdminUser = Depends(get_current_admin),
 ):
-    deleted = await delete_service(db, service_id)
-    if not deleted:
+    if not await delete_service(db, service_id):
         raise HTTPException(status_code=404, detail="Service not found")
 
 

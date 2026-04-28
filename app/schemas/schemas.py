@@ -166,3 +166,23 @@ class MetricsOut(BaseModel):
 class AvailabilityOut(BaseModel):
     date: date
     available_slots: list[str]
+
+
+# ─── Paginated responses ───────────────────────────────────────────────────────
+
+class OrdersPage(BaseModel):
+    items: list[OrderOut]
+    total: int
+    skip: int
+    limit: int
+
+
+# ─── Customer summary ──────────────────────────────────────────────────────────
+
+class CustomerSummary(BaseModel):
+    customer_name: str
+    customer_email: str
+    customer_phone: str
+    total_orders: int
+    total_spent: float
+    last_order: datetime

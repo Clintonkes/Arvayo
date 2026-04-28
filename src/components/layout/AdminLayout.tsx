@@ -2,7 +2,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import {
   LayoutDashboard, ClipboardList, Wrench, BarChart3, Settings,
-  LogOut, Menu, X, Sparkles, ChevronRight, Bell
+  Users, LogOut, Menu, X, Sparkles, ChevronRight, Bell
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 const navItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Orders', href: '/admin/orders', icon: ClipboardList },
+  { label: 'Customers', href: '/admin/customers', icon: Users },
   { label: 'Services', href: '/admin/services', icon: Wrench },
   { label: 'Reports', href: '/admin/reports', icon: BarChart3 },
   { label: 'Settings', href: '/admin/settings', icon: Settings },
