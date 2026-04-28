@@ -1,17 +1,20 @@
-import ssl
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
-import aiosmtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import httpx
 from app.config import settings
 from app.models.models import Order
 
 TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
 jinja_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=True)
 
+RESEND_API = "https://api.resend.com/emails"
+
 
 async def send_booking_confirmation(order: Order) -> None:
+    if not settings.resend_api_key:
+        print("[EMAIL] RESEND_API_KEY not configured — skipping confirmation email")
+        return
+
     try:
         template = jinja_env.get_template("email_confirmation.html")
         html_content = template.render(
@@ -23,21 +26,28 @@ async def send_booking_confirmation(order: Order) -> None:
             frontend_url=settings.frontend_url,
         )
 
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"Booking Confirmation – {order.order_number} | Arvayo LLC"
-        msg["From"] = f"{settings.from_name} <{settings.from_email}>"
-        msg["To"] = order.customer_email
+        from_address = f"{settings.resend_from_name} <{settings.resend_from_email}>"
 
-        msg.attach(MIMEText(html_content, "html"))
+        async with httpx.AsyncClient(timeout=15) as client:
+            response = await client.post(
+                RESEND_API,
+                headers={
+                    "Authorization": f"Bearer {settings.resend_api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": from_address,
+                    "to": [order.customer_email],
+                    "subject": f"Booking Confirmed – {order.order_number} | Arvayo LLC",
+                    "html": html_content,
+                },
+            )
 
-        await aiosmtplib.send(
-            msg,
-            hostname=settings.smtp_host,
-            port=settings.smtp_port,
-            username=settings.smtp_username,
-            password=settings.smtp_password,
-            start_tls=True,
-        )
+        if response.status_code in (200, 201):
+            print(f"[EMAIL] Confirmation sent → {order.customer_email} ({order.order_number})")
+        else:
+            print(f"[EMAIL] Resend {response.status_code}: {response.text}")
+
     except Exception as exc:
-        # Log but don't crash the booking flow
-        print(f"[EMAIL] Failed to send confirmation to {order.customer_email}: {exc}")
+        # Never crash the booking flow over an email failure
+        print(f"[EMAIL] Failed to send to {order.customer_email}: {exc}")

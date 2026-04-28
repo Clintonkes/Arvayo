@@ -21,12 +21,10 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 1440
 
-    smtp_host: str = "smtp.protonmail.ch"
-    smtp_port: int = 587
-    smtp_username: str = "arvayollc@proton.me"
-    smtp_password: str = ""
-    from_email: str = "arvayollc@proton.me"
-    from_name: str = "Arvayo LLC"
+    # Resend email API
+    resend_api_key: str = ""
+    resend_from_email: str = "onboarding@resend.dev"
+    resend_from_name: str = "Arvayo LLC"
 
     company_name: str = "Arvayo LLC"
     company_phone: str = "+1 (602) 583-8563"
