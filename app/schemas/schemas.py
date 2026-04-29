@@ -186,3 +186,13 @@ class CustomerSummary(BaseModel):
     total_orders: int
     total_spent: float
     last_order: datetime
+
+
+# ─── Contact form ──────────────────────────────────────────────────────────────
+
+class ContactInquiry(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    subject: str
+    message: str

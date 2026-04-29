@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>We've Received Your Enquiry – Arvayo LLC</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; color: #1e293b; }
+    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: linear-gradient(135deg, #00C4B4 0%, #009B8F 100%); padding: 36px 32px; text-align: center; }
+    .logo-text { font-size: 24px; font-weight: 800; color: #fff; }
+    .logo-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 3px; }
+    .icon-circle { width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 18px auto 12px; }
+    .header h1 { font-size: 20px; font-weight: 700; color: #fff; }
+    .header p { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 5px; }
+    .body { padding: 34px 32px; }
+    .greeting { font-size: 17px; font-weight: 600; color: #0A2540; margin-bottom: 6px; }
+    .intro { font-size: 14px; color: #475569; line-height: 1.65; margin-bottom: 22px; }
+    .message-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; margin-bottom: 20px; }
+    .msg-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 10px; }
+    .msg-row { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+    .msg-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .msg-key { font-size: 12px; font-weight: 600; color: #64748b; min-width: 70px; flex-shrink: 0; padding-top: 1px; }
+    .msg-val { font-size: 13px; color: #1e293b; line-height: 1.5; }
+    .timeline { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 18px 20px; margin-bottom: 20px; }
+    .timeline h3 { font-size: 13px; font-weight: 700; color: #0369a1; margin-bottom: 12px; }
+    .tl-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { width: 22px; height: 22px; background: #00C4B4; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; font-size: 11px; font-weight: 700; color: #fff; }
+    .tl-text { font-size: 13px; color: #334155; line-height: 1.5; }
+    .contact-row { text-align: center; padding: 14px; }
+    .contact-row p { font-size: 13px; color: #64748b; margin-bottom: 4px; }
+    .contact-row a { color: #00C4B4; text-decoration: none; font-weight: 600; }
+    .footer { background: #0A2540; padding: 20px 32px; text-align: center; }
+    .footer p { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+    .footer .brand { font-size: 14px; font-weight: 700; color: #00C4B4; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="logo-text">{{ company_name }}</div>
+      <div class="logo-sub">Professional Cleaning Services You Can Trust</div>
+      <div class="icon-circle">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </div>
+      <h1>We've Got Your Message!</h1>
+      <p>Our team will be in touch within 24 hours.</p>
+    </div>
+
+    <div class="body">
+      <p class="greeting">Hi {{ name.split()[0] }},</p>
+      <p class="intro">
+        Thank you for reaching out to Arvayo LLC. We've received your enquiry and one of our team
+        members will respond to you shortly. Here's a copy of what you sent:
+      </p>
+
+      <div class="message-box">
+        <div class="msg-label">Your Enquiry</div>
+        <div class="msg-row">
+          <span class="msg-key">Subject</span>
+          <span class="msg-val"><strong>{{ subject }}</strong></span>
+        </div>
+        <div class="msg-row">
+          <span class="msg-key">Message</span>
+          <span class="msg-val" style="white-space:pre-wrap;">{{ message }}</span>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <h3>📋 What Happens Next?</h3>
+        <div class="tl-item">
+          <div class="tl-dot">1</div>
+          <p class="tl-text"><strong>Team review</strong> — A member of our team will read your message and prepare a response.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">2</div>
+          <p class="tl-text"><strong>Response within 24 hours</strong> — We'll reply to <strong>{{ name }}</strong> at this email address with an answer or next steps.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">3</div>
+          <p class="tl-text"><strong>Need urgent help?</strong> — Call us directly for same-day or urgent requests.</p>
+        </div>
+      </div>
+
+      <div class="contact-row">
+        <p>Can't wait? Reach us directly:</p>
+        <p>
+          <a href="tel:{{ company_phone }}">{{ company_phone }}</a>
+          &nbsp;·&nbsp;
+          <a href="mailto:{{ company_email }}">{{ company_email }}</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="brand">{{ company_name }}</div>
+      <p>Professional Cleaning Services You Can Trust<br/>
+      © 2026 {{ company_name }}. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

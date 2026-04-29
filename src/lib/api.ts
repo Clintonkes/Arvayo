@@ -86,3 +86,11 @@ export const exportOrdersCsv = () =>
 
 export const fetchCustomers = () =>
   api.get('/admin/customers').then((r) => r.data)
+
+export const submitContact = (data: {
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+}) => api.post('/contact', data).then((r) => r.data)

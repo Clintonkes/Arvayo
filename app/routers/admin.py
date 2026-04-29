@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +14,7 @@ from app.crud.crud import (
     delete_service, get_metrics, get_customers
 )
 from app.utils.auth import verify_password, create_access_token, get_current_admin
+from app.utils.email import send_order_completed
 from app.models.models import AdminUser, OrderStatus
 import csv
 import io
@@ -90,12 +91,17 @@ async def get_order_detail(
 async def update_status(
     order_id: int,
     data: OrderStatusUpdate,
+    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
     _: AdminUser = Depends(get_current_admin),
 ):
     order = await update_order_status(db, order_id, data.status)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
+
+    if data.status == OrderStatus.completed:
+        background_tasks.add_task(send_order_completed, order)
+
     return OrderOut.model_validate(order)
 
 

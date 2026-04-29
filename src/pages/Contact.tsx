@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Phone, Mail, MapPin, Clock, CheckCircle2, Loader2, MessageSquare } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { submitContact } from '@/lib/api'
 
 const schema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -57,17 +58,22 @@ export default function Contact() {
 
   const onSubmit = async (data: any) => {
     setLoading(true)
-    // In production this would POST to /api/contact — for now open mailto
-    await new Promise(r => setTimeout(r, 800))
-    const subject = encodeURIComponent(`[Arvayo LLC] ${data.subject}`)
-    const body = encodeURIComponent(
-      `Name: ${data.name}\nEmail: ${data.email}\nPhone: ${data.phone || 'N/A'}\n\n${data.message}`
-    )
-    window.location.href = `mailto:arvayollc@proton.me?subject=${subject}&body=${body}`
-    toast.success("Opening your email client — we'll respond within 24 hours!")
-    setSubmitted(true)
-    reset()
-    setLoading(false)
+    try {
+      await submitContact({
+        name: data.name,
+        email: data.email,
+        phone: data.phone || undefined,
+        subject: data.subject,
+        message: data.message,
+      })
+      toast.success("Message sent! Check your inbox for a confirmation email.")
+      setSubmitted(true)
+      reset()
+    } catch {
+      toast.error("Failed to send message. Please call us directly or try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -155,7 +161,7 @@ export default function Contact() {
                       <CheckCircle2 className="w-8 h-8 text-emerald" />
                     </div>
                     <h3 className="text-xl font-bold text-navy">Message Sent!</h3>
-                    <p className="text-slate-500 max-w-sm">Your email client has opened with your message pre-filled. We'll respond within 24 hours.</p>
+                    <p className="text-slate-500 max-w-sm">We've received your enquiry and sent a confirmation to your email. We'll respond within 24 hours.</p>
                     <Button onClick={() => setSubmitted(false)} variant="outline">Send Another Message</Button>
                   </div>
                 ) : (

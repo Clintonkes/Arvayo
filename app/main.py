@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.database import engine
 from app.models.models import Base
-from app.routers import services, orders, admin
+from app.routers import services, orders, admin, contact
 from app.config import settings
 from app.utils.seed import auto_seed
 
@@ -46,6 +46,7 @@ app.add_middleware(
 app.include_router(services.router)
 app.include_router(orders.router)
 app.include_router(admin.router)
+app.include_router(contact.router)
 
 
 @app.get("/health")
