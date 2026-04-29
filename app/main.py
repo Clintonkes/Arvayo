@@ -27,9 +27,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+_ALLOWED_ORIGINS = [
+    settings.frontend_url,           # from env (e.g. https://arvayo.org)
+    "https://arvayo.org",
+    "https://www.arvayo.org",
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:3000"],
+    allow_origins=list(dict.fromkeys(_ALLOWED_ORIGINS)),  # dedupe
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
