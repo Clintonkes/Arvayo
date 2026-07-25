@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: arvayo
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    port: 8000
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: arvayo-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 1440
+      - key: APP_URL
+        fromService:
+          name: arvayo
+          property: url
+      - key: FRONTEND_URL
+        fromService:
+          name: arvayo
+          property: url
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        value: onboarding@resend.dev
+      - key: RESEND_FROM_NAME
+        value: Arvayo LLC
+      - key: COMPANY_NAME
+        value: Arvayo LLC
+      - key: COMPANY_PHONE
+        value: "+1 (602) 583-8563"
+      - key: COMPANY_EMAIL
+        value: arvayollc@proton.me
+      - key: SEED_DB
+        value: "true"
+    healthCheckPath: /health
+    autoDeploy: true
+
+databases:
+  - name: arvayo-db
+    plan: free
+    databaseName: arvayo_db

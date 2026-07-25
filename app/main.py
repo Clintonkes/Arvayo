@@ -29,6 +29,7 @@ app = FastAPI(
 
 _ALLOWED_ORIGINS = [
     settings.frontend_url,           # from env (e.g. https://arvayo.org)
+    settings.app_url,                # from env (e.g. https://arvayo.onrender.com)
     "https://arvayo.org",
     "https://www.arvayo.org",
     "http://localhost:5173",
