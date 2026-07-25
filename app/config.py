@@ -1,4 +1,4 @@
-from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
+from urllib.parse import urlparse, urlunparse
 from pydantic_settings import BaseSettings
 from pydantic import field_validator, model_validator
 
@@ -18,14 +18,10 @@ class Settings(BaseSettings):
         elif v.startswith("postgresql://"):
             v = "postgresql+asyncpg://" + v[len("postgresql://"):]
 
-        # asyncpg doesn't accept sslmode as a URL parameter.
-        # Strip it so the URL is clean; we detect ssl intent in _fix_ssl.
+        # asyncpg doesn't accept query parameters (sslmode, channel_binding,
+        # etc.) via the URL. Strip them all; SSL is handled via connect_args.
         parsed = urlparse(v)
-        params = parse_qs(parsed.query)
-        params.pop("sslmode", None)
-        if params:
-            v = urlunparse(parsed._replace(query=urlencode(params, doseq=True)))
-        else:
+        if parsed.query:
             v = urlunparse(parsed._replace(query=""))
         return v
 
