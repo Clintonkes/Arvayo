@@ -20,9 +20,7 @@ services:
           name: arvayo
           property: url
       - key: FRONTEND_URL
-        fromService:
-          name: arvayo
-          property: url
+        value: https://arvayo.org
       - key: RESEND_API_KEY
         sync: false
       - key: RESEND_FROM_EMAIL

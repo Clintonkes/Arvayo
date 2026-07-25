@@ -1,9 +1,11 @@
+from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 
 
 class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://postgres:password@localhost:5432/arvayo_db"
+    database_ssl: bool = False
 
     @field_validator("database_url", mode="before")
     @classmethod
@@ -15,7 +17,27 @@ class Settings(BaseSettings):
             v = "postgresql+asyncpg://" + v[len("postgres://"):]
         elif v.startswith("postgresql://"):
             v = "postgresql+asyncpg://" + v[len("postgresql://"):]
+
+        # asyncpg doesn't accept sslmode as a URL parameter.
+        # Strip it so the URL is clean; we detect ssl intent in _fix_ssl.
+        parsed = urlparse(v)
+        params = parse_qs(parsed.query)
+        params.pop("sslmode", None)
+        if params:
+            v = urlunparse(parsed._replace(query=urlencode(params, doseq=True)))
+        else:
+            v = urlunparse(parsed._replace(query=""))
         return v
+
+    @model_validator(mode="after")
+    def _fix_ssl(self) -> "Settings":
+        # If the original DATABASE_URL contained sslmode=require, enable SSL
+        # for asyncpg (which uses connect_args, not URL params).
+        import os
+        raw = os.environ.get("DATABASE_URL", "")
+        if "sslmode=require" in raw or "sslmode=verify-full" in raw:
+            self.database_ssl = True
+        return self
 
     secret_key: str = "change-me-in-production-use-a-long-random-string"
     algorithm: str = "HS256"
